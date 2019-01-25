@@ -2,10 +2,24 @@ import * as React from 'react';
 import styled from 'styled-components'
 import SIG from './SIG'
 
-const SIGsHolder = styled.div`
-display: flex;
-margin: auto;
-flex-wrap: wrap;
+const SIGsTitle = styled.h2`
+  color: white;
+`
+
+const SIGsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 120px auto;
+`
+
+const CardHolder = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1160;
+  width: 100%;
+  padding: 30px;
 `
 
 const SIGList = [
@@ -20,17 +34,28 @@ const SIGList = [
     "desc": "I love computers",
     "discord": "www.google.com",
     "name": "SIGWEB"
+  },
+  {
+    "advisor": "Markowsky",
+    "desc": "I love python 2.7",
+    "discord": "www.google.com",
+    "name": "SIGSEC"
   }
+
 ]
 
 class SIGs extends React.Component {
   public render() {
     return (
-      <SIGsHolder>
-        {SIGList.map(sig => (
-          <SIG sig={sig}/>
-        ))}
-      </SIGsHolder>
+      <SIGsWrapper>
+        <SIGsTitle>Special Interest Groups (SIGs)</SIGsTitle>
+        <hr/>
+        <CardHolder>
+          {SIGList.map((sig, index) => (
+            <SIG sig={sig} key={index}/>
+          ))}
+        </CardHolder>
+      </SIGsWrapper>
     );
   }
 }

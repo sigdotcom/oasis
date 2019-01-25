@@ -32,8 +32,8 @@ class Sponsors extends React.Component {
     return (
       <SponsorsWrapper>
         <CardHolder>
-          {SponsorList.map(sponsor => (
-            <Sponsor sponsor={sponsor}/>
+          {SponsorList.map((sponsor, index) => (
+            <Sponsor sponsor={sponsor} key={index}/>
           ))}
         </CardHolder>
         <Button>Learn More</Button>
