@@ -15,7 +15,7 @@ const SIGMeta = styled.div`
 `
 
 const SIGDesc = styled.p`
-  color: 4A798F;
+  color: #4A798F;
 `
 
 interface ISIGState {sig: any}

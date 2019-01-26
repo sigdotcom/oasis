@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components'
 
 const DescWrapper = styled.div`
-margin: auto;
+margin: 200px auto 60px auto;
 display: flex;
 max-width: 600px;
 `
@@ -10,8 +10,10 @@ const DescTitle = styled.h3`
 text-align:right;
 white-space: nowrap;
 padding-right: 60px;
+color: #4A798F;
 `
 const DescText = styled.p`
+color: #4A798F;
 `
 
 class Description extends React.Component {
