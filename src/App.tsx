@@ -1,21 +1,26 @@
-import { Layout } from 'antd';
 import * as React from 'react';
-import { Nav } from './components/index';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Events, Home, Membership, Sigs, Sponsors } from './screens'
 
-const { Content, Footer } = Layout
+
+import './App.css'
 
 class App extends React.Component {
   public render() {
     return (
-      <Layout className="layout">
-        <Nav/>
-        <Content style={{ padding: '0 50px' }}/>
-        <Footer style={{ textAlign: 'center' }}>
-          Ant Design ©2018 Created by Ant UED
-        </Footer>
-      </Layout>
+      <BrowserRouter>
+        <Switch>
+          <Route exact={true} path="/" component={Home}/>
+          <Route path="/tools/membership" component={Membership}/>
+          <Route path="/tools/events" component={Events}/>
+          <Route path="/tools/sigs" component={Sigs}/>
+          <Route path="/tools/sponsors" component={Sponsors}/>
+        </Switch>
+      </BrowserRouter>
     );
   }
 }
+  
+// <Route path="/login" component={Login}/>
 
 export default App;
