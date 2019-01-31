@@ -10,10 +10,13 @@ const DescTitle = styled.h3`
 text-align:right;
 white-space: nowrap;
 padding-right: 60px;
-color: #4A798F;
+color: #42C0FC;
 `
 const DescText = styled.p`
 color: #4A798F;
+`
+const ACM = styled.span`
+color: #77BF43;
 `
 
 class Description extends React.Component {
@@ -21,7 +24,7 @@ class Description extends React.Component {
     return (
       <DescWrapper>
         <DescTitle>
-          MST ACM: Who are we?
+          <ACM>MST ACM:</ACM> Who are we?
         </DescTitle>
         <div>
         <DescText>

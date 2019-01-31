@@ -20,6 +20,7 @@ const CardHolder = styled.div`
   max-width: 1160;
   width: 100%;
   padding: 30px;
+  justify-content: center;
 `
 
 const SIGList = [

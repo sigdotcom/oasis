@@ -8,7 +8,6 @@ class Nav extends React.Component {
     return (
       <Header>
         <Menu
-          theme="dark"
           mode="horizontal"
           defaultSelectedKeys={['1']}
           style={{ lineHeight: '64px' }}
@@ -17,8 +16,8 @@ class Nav extends React.Component {
           <Menu.Item key="2" disabled={true}>Events</Menu.Item>
           <Menu.Item key="3" disabled={true}>Sponsors</Menu.Item>
           <Menu.Item key="4" disabled={true}>Officers</Menu.Item>
-          <Button style={{ float: 'right' }}>Sign In</Button>
         </Menu>
+        <Button style={{ float: 'right' }}>Sign In</Button>
       </Header>
     );
   }
