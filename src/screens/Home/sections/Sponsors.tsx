@@ -1,5 +1,6 @@
 import { Button } from 'antd'
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import Sponsor from './Sponsor'
 
@@ -36,7 +37,9 @@ class Sponsors extends React.Component {
             <Sponsor sponsor={sponsor} key={index}/>
           ))}
         </CardHolder>
-        <Button>Learn More</Button>
+        <Link to="/tools/sponsors">
+          <Button>Learn More</Button>
+        </Link>
       </SponsorsWrapper>
     );
   }

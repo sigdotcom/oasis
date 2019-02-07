@@ -1,0 +1,182 @@
+@import "~antd/dist/antd.css";
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans');
+
+/* Because Ant Design doesn't have built in supper for 5 cols? */
+.col-5 {
+  width: 20%;
+  float: left;
+}
+
+.sign-up-btn {
+  color: #FFF;
+  background: #40A5DE;
+}
+
+.sign-up-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  padding: 50px 0;
+  width: 100%;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.table-header {
+  width: 79%;
+  margin-bottom: -45px;
+}
+
+.table-header h1 {
+  margin-bottom: -18px;
+  margin-top: 3px;
+  margin-left: 3px;
+  float: left;
+  font-size: 42px;
+}
+
+.show-wrapper {
+  display: visible;
+}
+
+.hide-wrapper {
+  display: none;
+}
+
+.group-selector {
+  width: 200px;
+  float: right;
+  margin-top: 20px;
+  margin-right: 3px;
+}
+
+.plan-items {
+  margin-bottom: -50px;
+}
+
+.plan-category {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding-left: 5px;
+  background: #F0F2F5;
+  border-right: 1px solid #EEE;
+  border-bottom: 1px solid #EEE;
+}
+
+.last-category {
+  border-right: none;
+}
+
+.plan-category p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+
+.plan-item {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  width: 200px;
+  height: 50px;
+  padding-left: 5px;
+  color: #376B83;
+  background: #FFF;
+  border-right: 1px solid #EEE;
+  border-bottom: 1px solid #EEE;
+}
+
+.plan-item:last-child {
+  border-bottom: none;
+}
+
+.plan-item p {
+  margin: 0;
+}
+
+.tiers-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.tier-header {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: #FFF;
+  background: #40A5DE;
+}
+
+.stacked {
+  flex-direction: column;
+}
+
+.stacked span {
+  margin-top: -10px;
+  font-size: 16px;
+}
+
+.tiers {
+  width: 65%;
+  float: right;
+  margin-top: 50px;
+}
+
+.tier {
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  background: #FFF;
+}
+
+.tier:hover {
+  position: relative;
+  z-index: 1000;
+  box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2);
+}
+
+.tier-detail-item {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #376B83;
+  border-bottom: 1px solid #EEE;
+  border-right: 1px solid #EEE;
+}
+
+.tier-detail-item:nth-last-child() {
+  border-bottom: none;
+  border-right: none;
+}
+
+.tier-detail-item p {
+  margin: 0;
+}
+
+.tier-select {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tier-select {
+  border-right: 1px solid #EEE;
+}
+
+.tier-select:nth-last-child() {
+  border-right: none;
+}
+
+.tier-select-btn {
+  color: #FFF;
+  background: #40A5DE;
+}
