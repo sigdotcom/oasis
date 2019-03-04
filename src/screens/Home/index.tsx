@@ -11,7 +11,6 @@ const Home = () => {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            padding: '0 50px'
           }}
         >
           <Description/>

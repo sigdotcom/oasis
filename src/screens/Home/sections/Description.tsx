@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components'
 
 const DescWrapper = styled.div`
+padding: 0 20px;
 margin: 200px auto 60px auto;
 display: flex;
 max-width: 600px;

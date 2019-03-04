@@ -14,6 +14,7 @@ display: flex;
 width: 100%;
 justify-content: center;
 height: 400px;
+padding: 0 40px;
 `
 
 const SponsorsWrapper = styled.div`
