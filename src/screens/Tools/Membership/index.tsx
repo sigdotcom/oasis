@@ -37,40 +37,12 @@ class Membership extends React.Component {
   constructor (props: any) {
     super(props);
     this.state = {
-      data: [
-        {
-          email: "email",
-          enrolled: "no",
-          id: 1,
-          name: "name",
-        },
-        {
-          email: "email2",
-          enrolled: "yes",
-          id: 2,
-          name: "name2",
-        },
-      ],
+      data: [],
       jsData: "a",
-      pictures: [],
+      users: [],
     };
   }
   public log = () => console.log(this.state);
-
-  // public componentDidMount() {
-  //   fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members')
-  //     // .then(response => response.json())
-  //     .then(
-  //       (response) => {
-  //         this.setState({
-  //           jsData: response
-  //         });
-  //       }
-  //     )
-        
-  //     //   data => this.setState({ data }));
-  //     // this.log(response);
-  // }
 
   // https://blog.hellojs.org/fetching-api-data-with-react-js-460fe8bbf8f2
   public componentDidMount() {
@@ -78,41 +50,35 @@ class Membership extends React.Component {
     fetch('https://randomuser.me/api/?results=10')
       .then(results => {
         return results.json();
-      }).then(data => {
-        const pict = data.results.map((pic: any) => {
-          return(
-        //     // <div key={pic.results}>
-        //       <h1 key="">{pic}</h1>
-        //     // <tr key={pic.id}>
-        //     //   <th>{pic.name.last}, {pic.name.first}</th>
-        //     //   <th>{pic.email}</th>
-        //     //   <th>{pic.gender}</th>
-        //     // </tr>
-        //     // </div>
-            
-            pic
-            
-
-
-          )
-        })
-
-        this.setState({ data: {pict} });
-
-
-
-        // this.setState({ pictures: {pict} });
-
-        // const info = data.results;
-        // console.log("state", info);
-        // this.setState({ pictures: info.name.first});
+      })
+      
+      
+      
+      
+      
+      .then(data => {
+        const userInfo = data.results
+        
+        
+        
+        
+        // .map((info: any) => {
+        //   return(
+        //     <tr key="">
+        //       <th>{info.name.first}</th>
+        //       <th>{info.name.first}</th>
+        //       <th>{info.name.first}</th>
+        //     </tr>
+        //   )
+        // })
+        this.setState({users: userInfo})
       })
   }
 
 
-  public search = (value: string) => {
-    this.componentDidMount()
-    console.log(value);
+  public search = () => {
+    // this.componentDidMount()
+    console.log(this.state);
   }
 
   public render(): JSX.Element {
@@ -131,11 +97,6 @@ class Membership extends React.Component {
           size="large"
           onSearch={this.log}
         />
-        {/* <h1 id="name"><b>Name</b></h1>
-        <h1 id="email"><b>Email</b></h1>
-        <h1 id="status"><b>Status</b></h1> */}
-
-
         
         <h1>before</h1>
         {/*  this is how you pass info from one class to the next
