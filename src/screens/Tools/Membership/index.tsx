@@ -27,8 +27,12 @@ import MemberList from './MemberList';
   //   };
   // }
 
-const divStyle = {
-  backgroundColor: "pink",
+const background = {
+  backgroundColor: "lightgreen",
+}
+const tableArea = {
+  align: "center",
+  width: "80%",
 };
 
 class Membership extends React.Component {
@@ -38,53 +42,30 @@ class Membership extends React.Component {
     super(props);
     this.state = {
       data: [],
-      jsData: "a",
       users: [],
     };
   }
   public log = () => console.log(this.state);
 
-  // https://blog.hellojs.org/fetching-api-data-with-react-js-460fe8bbf8f2
   public componentDidMount() {
-    // fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members')
     fetch('https://randomuser.me/api/?results=10')
       .then(results => {
         return results.json();
-      })
-      
-      
-      
-      
-      
-      .then(data => {
+      }).then(data => {
         const userInfo = data.results
-        
-        
-        
-        
-        // .map((info: any) => {
-        //   return(
-        //     <tr key="">
-        //       <th>{info.name.first}</th>
-        //       <th>{info.name.first}</th>
-        //       <th>{info.name.first}</th>
-        //     </tr>
-        //   )
-        // })
         this.setState({users: userInfo})
       })
   }
 
-
   public search = () => {
-    // this.componentDidMount()
     console.log(this.state);
   }
 
   public render(): JSX.Element {
     // const { accounts } = this.props;
     return (
-      <div style={divStyle}>        
+      <div style={background}>
+      <div style={tableArea}>    
         <this.Search
           placeholder="input search text"
           enterButton="Search"
@@ -107,6 +88,7 @@ class Membership extends React.Component {
         <h1>after</h1>
 
         <br /><br />
+      </div>
       </div>
     );
 };
