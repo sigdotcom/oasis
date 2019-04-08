@@ -1,7 +1,10 @@
-import moment from "moment";
-import Modal from "react-modal";
+import Modal from "react-modal"
 import * as React from "react"
 import styled from "styled-components"
+import { Form, Button } from 'antd'
+
+import Event from "./Event"
+import EventForm from "./EventForm"
 
 Modal.setAppElement('#root')
 
@@ -24,22 +27,13 @@ interface IEvent {
   hostSigs: ISig;
 }
 
-interface IEventState {
+interface IEventsState {
   error: any;
   events: IEvent[];
   isLoaded: boolean;
   modalIsOpen: boolean;
-  modalId: number | undefined;
   editData: any;
-}
-
-interface IEventProps {
-  event: IEvent;
-  key: number;
-  editEvent: any;
-}
-
-interface IEventState {
+  editing: boolean
 }
 
 const PageWrapper = styled.div`
@@ -51,85 +45,12 @@ const EventsList = styled.ul`
   padding: 0;
   margin: 0;
 `
-
-const EventWrapper = styled.li`
+const Header = styled.div`
   display: flex;
-  margin: 20px 0;
   justify-content: space-between;
 `
-const EventContent = styled.div`
-  display: flex;
-  align-items: center;
-`
-const EventFlier = styled.img`
-  height: 88px;
-  width: 68px;
-`
-const EventDetails = styled.div`
-`
-const EventHighLevel = styled.div`
-  display: flex;
-`
-const EventTitle = styled.h3`
-  margin: 0;
-  line-height: 20px;
-`
-const EventDate = styled.p`
-  padding: 0 6px;
-  margin: 0 0 0 20px;
-  border-radius: 20px;
-  border: 2px solid blue;
-`
-const EventMidLevel = styled.div`
-`
-const EventDescription = styled.div`
-`
-const EventLowLevel = styled.div`
-`
 
-function formatDate(date: Date) {
-  return moment(date).format("MMMM Do h:mmA");
-}
-
-class Event extends React.Component<IEventProps, IEventState> {
-  public constructor(props: IEventProps) {
-    super(props)
-  }
-
-  handleEdit = () => {
-    this.props.editEvent(this.props.event.id, this.props.event);
-  }
-
-  render() {
-    const { event } = this.props;
-    return (
-      <EventWrapper>
-        <EventContent>
-          <EventFlier src={event.eventLink} alt={"Flier"} />
-          <EventDetails>
-            <EventHighLevel>
-              <EventTitle>ACM {event.hostSigs.name}: {event.eventTitle}</EventTitle>
-              <EventDate>
-                {formatDate(event.dateHosted)}{event.dateHosted !== event.dateExpire && (" - " + formatDate(event.dateExpire))}
-              </EventDate>
-            </EventHighLevel>
-            <EventMidLevel>
-              {event.location}{event.eventLink && (<span> - <a href={event.eventLink}>Link</a></span>)}
-            </EventMidLevel>
-            <EventDescription>{event.description}</EventDescription>
-            <EventLowLevel>{formatDate(event.dateCreated)}</EventLowLevel>
-          </EventDetails>
-        </EventContent>
-        <div>
-          Hello
-          <button onClick={this.handleEdit}>Edit</button>
-        </div>
-      </EventWrapper>
-    );
-  }
-}
-
-class Events extends React.Component<{}, IEventState> {
+class Events extends React.Component<{}, IEventsState> {
   public constructor(props: {}) {
     super(props)
 
@@ -138,8 +59,8 @@ class Events extends React.Component<{}, IEventState> {
       events: [],
       isLoaded: false,
       modalIsOpen: false,
-      modalId: undefined,
-      editData: {}
+      editData: {},
+      editing: true
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -149,7 +70,6 @@ class Events extends React.Component<{}, IEventState> {
 
   closeModal() {
     this.setState({
-      modalId: undefined,
       modalIsOpen: false,
       editData: {}
     });
@@ -178,26 +98,33 @@ class Events extends React.Component<{}, IEventState> {
       )
   }
 
-  private editEvent = (id: number, data: any) => {
-    data["hostSigs"] = data["hostSigs"].name
+  private addEvent = (event: any) => {
     this.setState({
-      modalId: id,
       modalIsOpen: true,
-      editData: data
+      editData: {},
+      editing: false
     });
   }
 
-  private patchEvent = (event: any) => {
-    event.preventDefault()
-    console.log(this.state.editData)
-    fetch("http://localhost/api/v1/events/" + this.state.modalId,
+  private editEvent = (id: number, data: any) => {
+    let copyData = JSON.parse(JSON.stringify(data))
+    copyData["hostSigs"] = data["hostSigs"].name
+    this.setState({
+      modalIsOpen: true,
+      editData: copyData,
+      editing: true
+    });
+  }
+
+  private patchEvent = (data: any) => {
+    fetch("http://localhost/api/v1/events/" + data.id,
       {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         method: "PATCH",
-        body: JSON.stringify(this.state.editData)
+        body: JSON.stringify(data)
       })
       .then(res => res.json())
       .then(
@@ -223,25 +150,20 @@ class Events extends React.Component<{}, IEventState> {
 
 
   public render() {
-    const { events, isLoaded, error, modalIsOpen, modalId, editData } = this.state;
+    const { events, isLoaded, error, modalIsOpen, editData, editing } = this.state;
     let content;
+    const WrappedForm = Form.create({ name: 'edit' })(EventForm);
+    const intent = editing ? "Edit" : "Add";
+
     const modal = (
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={this.closeModal}
-        contentLabel={"Edit" + modalId}
+        contentLabel={intent + "Event"}
       >
-
-        <button onClick={this.closeModal}>close</button>
-        <form onSubmit={this.patchEvent}>
-          <input onChange={this.handleChange("id")} value={editData.id}/>
-          <input onChange={this.handleChange("eventTitle")} value={editData.eventTitle}/>
-          <input onChange={this.handleChange("description")} value={editData.description}/>
-          <input onChange={this.handleChange("location")} value={editData.location}/>
-          <input onChange={this.handleChange("flierLink")} value={editData.flierLink}/>
-          <input onChange={this.handleChange("eventLink")} value={editData.eventLink}/>
-          <input type="submit" value="Submit" />
-        </form>
+        <Button onClick={this.closeModal}>Close</Button>
+        <h1>{intent} Event Details</h1>
+        <WrappedForm editing={editing} patchEvent={this.patchEvent} handleChange={this.handleChange} editData={editData}/>
       </Modal>
     )
     /*
@@ -269,7 +191,10 @@ class Events extends React.Component<{}, IEventState> {
 
     return (
       <PageWrapper>
-        <h1>Events</h1>
+        <Header>
+          <h1>Events</h1>
+          <Button onClick={this.addEvent}>Add Event</Button>
+        </Header>
         {modal}
         <EventsList>
           {content}
