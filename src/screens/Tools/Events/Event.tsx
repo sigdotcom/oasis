@@ -2,6 +2,8 @@ import moment from "moment";
 import * as React from "react"
 import styled from "styled-components"
 
+import { Button } from "antd"
+
 interface ISig {
   dateFounded: Date;
   description: string;
@@ -25,6 +27,7 @@ interface IEventProps {
   event: IEvent;
   key: number;
   editEvent: any;
+  deleteEvent: any;
 }
 
 const EventWrapper = styled.li`
@@ -39,6 +42,7 @@ const EventContent = styled.div`
 const EventFlier = styled.img`
   height: 88px;
   width: 68px;
+  margin-right: 20px;
 `
 const EventDetails = styled.div`
 `
@@ -73,7 +77,11 @@ class Event extends React.Component<IEventProps, {}> {
   }
 
   handleEdit = () => {
-    this.props.editEvent(this.props.event.id, this.props.event);
+    this.props.editEvent(this.props.event);
+  }
+
+  handleDelete = () => {
+    this.props.deleteEvent(this.props.event.id);
   }
 
   render() {
@@ -81,7 +89,7 @@ class Event extends React.Component<IEventProps, {}> {
     return (
       <EventWrapper>
         <EventContent>
-          <EventFlier src={event.eventLink} alt={"Flier"} />
+          <EventFlier src={event.flierLink} alt={"Flier"} />
           <EventDetails>
             <EventHighLevel>
               <EventTitle>ACM {event.hostSigs.name}: {event.eventTitle}</EventTitle>
@@ -93,11 +101,12 @@ class Event extends React.Component<IEventProps, {}> {
               {event.location}{event.eventLink && (<span> - <a href={event.eventLink}>Link</a></span>)}
             </EventMidLevel>
             <EventDescription>{event.description}</EventDescription>
-            <EventLowLevel>{this.formatDate(event.dateCreated)}</EventLowLevel>
+            <EventLowLevel>Created {this.formatDate(event.dateCreated)}</EventLowLevel>
           </EventDetails>
         </EventContent>
         <div>
-          <button onClick={this.handleEdit}>Edit</button>
+          <Button onClick={this.handleEdit}>Edit</Button>
+          <Button onClick={this.handleDelete}>Delete</Button>
         </div>
       </EventWrapper>
     );

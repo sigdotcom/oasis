@@ -106,7 +106,7 @@ class Events extends React.Component<{}, IEventsState> {
     });
   }
 
-  private editEvent = (id: number, data: any) => {
+  private editEvent = (data: any) => {
     let copyData = JSON.parse(JSON.stringify(data))
     copyData["hostSigs"] = data["hostSigs"].name
     this.setState({
@@ -114,6 +114,44 @@ class Events extends React.Component<{}, IEventsState> {
       editData: copyData,
       editing: true
     });
+  }
+  
+  private deleteEvent = (id: number) => {
+    fetch("http://localhost/api/v1/events/" + id,
+      {
+        method: "DELETE",
+      })
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.refresh()
+        },
+        (error) => {
+          // TODO
+        }
+      )
+  }
+
+  private postEvent = (data: any) => {
+    fetch("http://localhost/api/v1/events/",
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.closeModal()
+          this.refresh()
+        },
+        (error) => {
+          // TODO
+        }
+      )
   }
 
   private patchEvent = (data: any) => {
@@ -163,7 +201,7 @@ class Events extends React.Component<{}, IEventsState> {
       >
         <Button onClick={this.closeModal}>Close</Button>
         <h1>{intent} Event Details</h1>
-        <WrappedForm editing={editing} patchEvent={this.patchEvent} handleChange={this.handleChange} editData={editData}/>
+        <WrappedForm editing={editing} postEvent={this.postEvent} patchEvent={this.patchEvent} handleChange={this.handleChange} editData={editData}/>
       </Modal>
     )
     /*
@@ -179,12 +217,12 @@ class Events extends React.Component<{}, IEventsState> {
       )
     } else if (error) {
       content = (
-        <h3>Error: {error}</h3>
+        <h3>Error: {error.toString()}</h3>
       )
     } else {
       content = events.map((event: IEvent, index: number) => {
           return (
-            <Event event={event} editEvent={this.editEvent} key={index} />
+            <Event event={event} deleteEvent={this.deleteEvent} editEvent={this.editEvent} key={index} />
           )
       })
     }

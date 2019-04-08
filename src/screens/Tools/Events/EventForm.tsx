@@ -4,12 +4,25 @@ import { Form, Input, InputNumber, DatePicker, Button } from 'antd';
 const { RangePicker } = DatePicker;
 
 class EventForm extends React.Component<any, any> {
+  convertTimes = (data: any) => {
+    if (data.hasOwnProperty("dateRange") && data.dateRange) {
+      data.dateHosted = data.dateRange[0].toDate()
+      data.dateExpire = data.dateRange[1].toDate()
+      delete data.dateRange
+    }
+  }
+
   handleSubmit = (e: any) => {
     e.preventDefault();
-    const { patchEvent } = this.props;
+    const { patchEvent, postEvent, editing } = this.props;
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
-        patchEvent(values)
+        this.convertTimes(values)
+        if (editing) {
+          patchEvent(values)
+        } else {
+          postEvent(values)
+        }
       }
     });
   }
@@ -20,6 +33,7 @@ class EventForm extends React.Component<any, any> {
 
     return (
       <Form onSubmit={this.handleSubmit}>
+      {editing && (
         <Form.Item
           label="ID"
         >
@@ -30,12 +44,27 @@ class EventForm extends React.Component<any, any> {
             <InputNumber />
           )}
         </Form.Item>
+      )}
+        <Form.Item
+          label="Host Community"
+        >
+          {getFieldDecorator('hostSigs', {
+            initialValue: editData.hostSigs,
+            rules: [{
+              required: !editing, message: 'Please input the host community\'s name!'
+            }]
+          })(
+            <Input />
+          )}
+        </Form.Item>
         <Form.Item
           label="Name"
         >
           {getFieldDecorator('eventTitle', {
             initialValue: editData.eventTitle,
-            required: !editing
+            rules: [{
+              required: !editing, message: 'Please input the event\'s name!'
+            }]
           })(
             <Input />
           )}
@@ -45,7 +74,9 @@ class EventForm extends React.Component<any, any> {
         >
           {getFieldDecorator('description', {
             initialValue: editData.description,
-            required: !editing
+            rules: [{
+              required: !editing, message: 'Please input the event\'s description!'
+            }]
           })(
             <Input />
           )}
@@ -55,7 +86,9 @@ class EventForm extends React.Component<any, any> {
         >
           {getFieldDecorator('location', {
             initialValue: editData.location,
-            required: !editing
+            rules: [{
+              required: !editing, message: 'Please input the event\'s location!'
+            }]
           })(
             <Input />
           )}
@@ -66,7 +99,7 @@ class EventForm extends React.Component<any, any> {
           {getFieldDecorator('flierLink', {
             initialValue: editData.flierLink,
             rules: [{
-              type: 'url', message: 'The input is not a valid URL.',
+              type: 'url', message: 'The input is not a valid URL.'
             },
               {
               required: !editing, message: 'Please input your E-mail!',
@@ -82,7 +115,7 @@ class EventForm extends React.Component<any, any> {
           {getFieldDecorator('eventLink', {
             initialValue: editData.eventLink,
             rules: [{
-              type: 'url', message: 'The input is not a valid URL.',
+              type: 'url', message: 'The input is not a valid URL.'
             }]
           })(
             <Input />
@@ -91,7 +124,7 @@ class EventForm extends React.Component<any, any> {
         <Form.Item
           label="Date and Time"
         >
-          {getFieldDecorator('test', {
+          {getFieldDecorator('dateRange', {
             rules: [{ type: 'array', required: !editing }],
           })(
             <RangePicker showTime format="MM-DD-YYYY HH:mm:ss" />
