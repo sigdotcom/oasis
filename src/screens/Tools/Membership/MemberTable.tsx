@@ -5,48 +5,57 @@ interface IMemberTableProps {
   users: any,
 }
 
-
-
-
-// const confirm = (id: string) => {
-//   Modal.confirm({
-//     title: 'Confirm',
-//     content: id,
-//     okText: 'OK',
-//     cancelText: 'Cancel',
-//   });
-// };
-
-
 class MemberTable extends React.Component<IMemberTableProps, {}> {
   private col = [{
-    dataIndex: 'firstName',
     key: 'firstName',
+    render: (record: any) => (
+      <span>
+        {record.firstName} {record.lastName}
+      </span>
+    ),
     title: 'firstName',
-  }, {
-    dataIndex: 'lastName',
-    key: 'lastName',
-    title: 'lastName',
   }, {
     dataIndex: 'email',
     key: 'email',
     title: 'Email',
   }, {
-    dataIndex: 'membershipExpiration',
+    // dataIndex: 'membershipExpiration',
     key: 'membershipExpiration',
+    render: (record: any) => (
+      <span>
+        {this.dateCheck(record.membershipExpiration)}
+      </span>
+    ),
     title: 'membershipExpiration',
   }, {
     key: 'action',
     render: (record: any) => (
       <span>
-        <a href="#" onClick={this.logParam(record.firstName)}>Invite {record.firstName} {record.lastName}</a>
+        <a onClick={this.logParam(record.firstName)}>Edit</a>
         <Divider type="vertical" />
-        <a href="#" onClick={this.delete(record.id)}>Delete</a>
+        <a onClick={this.delete(record.id)}>Delete</a>
       </span>
     ),
     title: 'Action',
   }];
 
+  public dateCheck = (date: any) => {
+    let d = ''
+    const da = new Date(date);
+    const now = new Date(Date.now());
+    
+    console.log(typeof date, date)
+    console.log(typeof da, da)
+
+    if(da > now) {
+      d = 'active'
+    } else if (da <= now) {
+      d = 'inactive'
+    } else {
+      d = 'invalid'
+    }
+    return d
+  }
   
   // TODO: implememt this -> search through thing and delete, might want to make search first?
   // public delete = (id: any) => (e: any) => {
@@ -54,20 +63,18 @@ class MemberTable extends React.Component<IMemberTableProps, {}> {
   public delete =(id: any) => (e: any) => {
     console.log(id)
 
-    // const requestOptions = {
-    //   method: 'DELETE'
-    // };
+    // this.dateCheck("2019-04-07T22:58:07.508Z")
 
-    fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/'+id, {method: 'DELETE', mode: 'cors',})
-      .then(results => {
-        console.log(results);
-        return results.json();
-      }).then(data => {
-        console.log(data);
-        // const userInfo = data
-        // this.setState({users: userInfo})
-        this.componentDidMount();
-      })
+    // fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/'+id, {method: 'DELETE'})
+    //   .then(results => {
+    //     console.log(results);
+    //     return results.json();
+    //   }).then(data => {
+    //     console.log(data);
+    //     // const userInfo = data
+    //     // this.setState({users: userInfo})
+    //     this.componentDidMount();
+    //   })
   }
 
   public componentDidMount() {

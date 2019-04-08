@@ -9,25 +9,6 @@ interface IMembersipState{
   tableRows: any[];
 }
 
-  // interface IAccount{
-  //   name: string;
-  //   email: string;
-  //   status: string;
-  // }
-  // class Account extends React.Component<IAccountProps, IAccount> {
-  //   public state: IAccount = {
-  //     name: "Name test",
-  //     email: "Email@mst.edu",
-  //     status: "Status test"
-  //   };
-
-  //   public handleChange = (name : keyof IAccount) => (event : any) => {
-  //     this.setState({
-  //       name: event.target.value,
-  //     } as Pick<IAccount, keyof IAccount>);
-  //   };
-  // }
-
 const background = {
   backgroundColor: "lightgreen",
 }
@@ -38,7 +19,6 @@ const padding = {
   paddingBottom: "25px",
   paddingTop: "25px",
 }
-
 
 class Membership extends React.Component<{}, IMembersipState> {
   public Search = Input.Search;
