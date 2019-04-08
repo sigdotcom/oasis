@@ -11,14 +11,14 @@ interface IMembersipState{
 
 const background = {
   backgroundColor: "lightgreen",
-}
+};
 const tableArea = {
   width: "80%",
 };
 const padding = {
   paddingBottom: "25px",
   paddingTop: "25px",
-}
+};
 
 class Membership extends React.Component<{}, IMembersipState> {
   public Search = Input.Search;
@@ -48,8 +48,6 @@ class Membership extends React.Component<{}, IMembersipState> {
   public search = (value: any) => {
     console.log(value);
   }
-
-
 
   public render(): JSX.Element {
     // const { accounts } = this.props;
