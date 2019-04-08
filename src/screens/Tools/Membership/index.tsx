@@ -1,12 +1,13 @@
 import { Input } from 'antd';
+import { Row } from 'antd';
 import * as React from "react";
-import MemberList from './MemberList';
+import MemberTable from './MemberTable';
 
-  // interface IAccountProps{
-  //   accounts: any[];
-  //   createItem: (context: any) => any;
-  //   classes: any;
-  // }
+interface IMembersipState{
+  data: any[];
+  users: any[];
+  tableRows: any[];
+}
 
   // interface IAccount{
   //   name: string;
@@ -31,67 +32,72 @@ const background = {
   backgroundColor: "lightgreen",
 }
 const tableArea = {
-  align: "center",
   width: "80%",
 };
+const padding = {
+  paddingBottom: "25px",
+  paddingTop: "25px",
+}
 
-class Membership extends React.Component {
+
+class Membership extends React.Component<{}, IMembersipState> {
   public Search = Input.Search;
 
   constructor (props: any) {
     super(props);
     this.state = {
       data: [],
+      tableRows: [],
       users: [],
     };
   }
   public log = () => console.log(this.state);
 
   public componentDidMount() {
-    fetch('https://randomuser.me/api/?results=10')
+    fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members')
       .then(results => {
+        console.log(results)
         return results.json();
       }).then(data => {
-        const userInfo = data.results
+        const userInfo = data
         this.setState({users: userInfo})
       })
   }
 
-  public search = () => {
-    console.log(this.state);
+  // public search = (name: any) => (e: any) => {
+  public search = (value: any) => {
+    console.log(value);
   }
+
+
 
   public render(): JSX.Element {
     // const { accounts } = this.props;
     return (
       <div style={background}>
-      <div style={tableArea}>    
-        <this.Search
-          placeholder="input search text"
-          enterButton="Search"
-          size="large"
-          onSearch={this.search}
-        />
-        <this.Search
-          placeholder="click for props"
-          enterButton="Show Props?"
-          size="large"
-          onSearch={this.log}
-        />
-        
-        <h1>before</h1>
-        {/*  this is how you pass info from one class to the next
-              "stateFromParent" -> whatever is being set equal to
-              has to be in the child class' props interface
-         */}
-        <MemberList stateFromParent={this.state}/>
-        <h1>after</h1>
+        <Row type="flex" justify="center">
+          <div style={tableArea}>    
+            <this.Search
+              style={padding}
+              placeholder="input search text"
+              enterButton="Search"
+              size="large"
+              onSearch={this.search}
+            />
+            
+            {/*  this is how you pass info from one class to the next
+                  "stateFromParent" -> whatever is being set equal to
+                  has to be in the child class' props interface
+            */}
+            {/* TDOO: "users" is going to have to be a bunch of "newClass -> table rows" */}
+            <MemberTable users={this.state.users}/>
 
-        <br /><br />
-      </div>
+            <br /><br />
+          </div>
+        </Row>
       </div>
     );
-};
+  };
 }
 
 
