@@ -3,9 +3,6 @@ import * as React from "react";
 import MemberTable from './MemberTable';
 
 interface IMembersipState{
-  data: any[];
-  ret: any[];
-  tableRows: any[];
   users: any[];
 }
 
@@ -23,9 +20,6 @@ class Membership extends React.Component<{}, IMembersipState> {
   constructor (props: any) {
     super(props);
     this.state = {
-      data: [],
-      ret: [false, false],
-      tableRows: [],
       users: [],
     };
   }
@@ -82,7 +76,7 @@ class Membership extends React.Component<{}, IMembersipState> {
                   has to be in the child class' props interface
             */}
             {/* TDOO: "users" is going to have to be a bunch of "newClass -> table rows" */}
-            <MemberTable users={this.state.users}/>
+            <MemberTable usersProps={this.state.users}/>
             <br /><br />
           </div>
         </Row>

@@ -1,23 +1,19 @@
+import { DatePicker } from 'antd';
 import { Divider, Table } from 'antd';
-// import { DatePicker } from 'antd';
-// import { Button, Popover } from 'antd';
-// import * as moment from 'moment';
 import { Input } from 'antd'
+// import { Button, Popover } from 'antd';
+import * as moment from 'moment';
 import * as React from 'react';
 
 interface IMemberTableProps {
-  openDatePicker: boolean;
-  users: any,
-  visible_array: any,
+  usersProps: any,
 }
 
 interface IMemberTableState {
-  visible: any,
   users: any,
-  openDatePicker: boolean,
 }
 
-// const dateFormat = 'MM/DD/YYYY';
+const dateFormat = 'MM/DD/YYYY';
 
 class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> {
   public inputDate = Input.Search;
@@ -47,20 +43,28 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
     key: 'action',
     render: (record: any) => (
       <span>
-
+{/*   // this is new stuff
         <this.inputDate
           placeholder="MM/DD/YYYY"
           onSearch={this.changeDate}
           style={{ width: 150 }}
         />
 
-        <a onClick={this.put(record.id, "2020-04-07T08:24:01.378Z")}>Edit Date</a>
+        <a onClick={this.put(record.id, record, "2020-04-07T08:24:01.378Z")}>Edit Date</a>
+        <Divider type="vertical" />
+        <a onClick={this.delete(record.id)}>Delete</a> */}
+
+
+        {/* this is old stuff */}
+        <DatePicker size='small' defaultValue={moment(new Date(Date.now()), dateFormat)} format={dateFormat} />
+        <a onClick={this.put(record.id, record, "2020-04-07T08:24:01.378Z")}>Edit</a>
         <Divider type="vertical" />
         <a onClick={this.delete(record.id)}>Delete</a>
       </span>
     ),
     title: 'Action',
   }];
+
 
   // * https://stackoverflow.com/questions/52633932/reactjs-ant-design-open-datepicker-on-button-click
   // public togglePicker() {
@@ -72,15 +76,20 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
   constructor(props: any) {
     super(props);
     this.state = {
-      openDatePicker: false,
-      users: [],
-      visible: false,
-      // visible: false,
+      users: this.props.usersProps,
     }
   }
 
-  public put = (id: any, date: any) => (e: any) => {
-    console.log(id, date);
+  public componentWillReceiveProps(nextProps: any) {
+    if (nextProps.value !== this.props.usersProps) {
+      this.setState({ users: nextProps.usersProps });
+    }
+  }
+
+  public put = (id: any, record: any, date: any) => (e: any) => {
+    console.log(id, record, date);
+    record.membershipExpiration = date;
+    console.log(id, record, date);
     fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/' + id, {
       body: JSON.stringify({
         membershipExpiration: date,
@@ -90,16 +99,16 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
       mode: 'cors',
     })
       .then(results => {
+        console.log("results: ", results);
         return results.json();
       }).then(data => {
+        console.log("data: ", data);
         const userInfo = data;
         this.setState({ users: userInfo })
       }).catch(err => {
         console.log(err);
       })
   }
-
-  
 
   public changeDate = (date: any) => {
     console.log('fart');
@@ -121,33 +130,32 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
     return out
   }
 
-  // componentDidUpdate(prevProps: any) {
-  //   // Typical usage (don't forget to compare props):
-  //   if (this.props.n_test !== prevProps.users) {
-  //     this.fetchData(this.props.n_test);
-  //   }
-  // }
-
   public delete =(id: any) => (e: any) => {
-    console.log(id)
+    console.log(id);
+    this.setState({ users: this.props.usersProps })
+    console.log(this.state.users);
+    console.log(this.props.usersProps);
+
     fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/'+id, {method: 'DELETE'})
       .then(results => {
         return results.json();
       }).then(data => {
+        console.log(data);
         const userInfo = data
         this.setState({ users: userInfo })
+        console.log('after state: ', this.state.users);
       }).catch(err => {
         console.log('err: ', err);
       })
   }
 
   public logParam = (name: any) => (e: any) => console.log(name);
-  public printUsers = () => console.log(this.props.visible_array);
+  public printUsers = () => console.log(this.props.usersProps);
 
   public render(): JSX.Element {
     return (  
       <div>
-        <Table columns={this.col} dataSource={this.props.users} pagination={{ defaultPageSize: 100 }} rowKey='uid'/>
+        <Table columns={this.col} dataSource={this.props.usersProps} pagination={{ defaultPageSize: 100 }} rowKey='uid' />
       </div>
     );
   }
