@@ -1,5 +1,4 @@
-import { Input } from 'antd';
-import { Row } from 'antd';
+import { Input, Row } from 'antd';
 import * as React from "react";
 import MemberTable from './MemberTable';
 
@@ -43,12 +42,6 @@ class Membership extends React.Component<{}, IMembersipState> {
       })
   }
 
-  public findArrayElementByTitle(array: any, title: any) {
-    return array.find((element: any) => {
-      return element.title === title;
-    })
-  }
-
   public search = (value: any) => {
     const words = value.split(' ');
     const fName = words[0];
@@ -66,7 +59,6 @@ class Membership extends React.Component<{}, IMembersipState> {
     return 'fart'
     // console.log(v)
   }
-
   public mappingFunction() {
     return false;
   };
@@ -76,7 +68,7 @@ class Membership extends React.Component<{}, IMembersipState> {
     return (
       <div>
         <Row type="flex" justify="center">
-          <div style={tableArea}>    
+          <div style={tableArea}>   
             <this.Search
               style={padding}
               placeholder="input search text"
@@ -84,14 +76,13 @@ class Membership extends React.Component<{}, IMembersipState> {
               size="large"
               onSearch={this.search}
             />
-            
+
             {/*  this is how you pass info from one class to the next
                   "stateFromParent" -> whatever is being set equal to
                   has to be in the child class' props interface
             */}
             {/* TDOO: "users" is going to have to be a bunch of "newClass -> table rows" */}
-            <MemberTable n_test={this.state.users} visible_array={this.makeVisibleArray()}/>
-
+            <MemberTable users={this.state.users}/>
             <br /><br />
           </div>
         </Row>
