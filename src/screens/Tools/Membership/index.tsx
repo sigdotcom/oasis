@@ -5,13 +5,11 @@ import MemberTable from './MemberTable';
 
 interface IMembersipState{
   data: any[];
-  users: any[];
+  ret: any[];
   tableRows: any[];
+  users: any[];
 }
 
-const background = {
-  backgroundColor: "lightgreen",
-};
 const tableArea = {
   width: "80%",
 };
@@ -27,6 +25,7 @@ class Membership extends React.Component<{}, IMembersipState> {
     super(props);
     this.state = {
       data: [],
+      ret: [false, false],
       tableRows: [],
       users: [],
     };
@@ -44,15 +43,38 @@ class Membership extends React.Component<{}, IMembersipState> {
       })
   }
 
-  // public search = (name: any) => (e: any) => {
-  public search = (value: any) => {
-    console.log(value);
+  public findArrayElementByTitle(array: any, title: any) {
+    return array.find((element: any) => {
+      return element.title === title;
+    })
   }
+
+  public search = (value: any) => {
+    const words = value.split(' ');
+    const fName = words[0];
+    const lName = words[1];
+
+    const p =  this.state.users.filter((element: any) => {
+      return element.firstName.toLowerCase() === fName.toLowerCase() && element.lastName.toLowerCase() === lName.toLowerCase();
+    });
+    this.setState({ users: p })
+  }
+
+  public makeVisibleArray() {
+
+    // const v = this.state.users.map((this.mappingFunction, item));
+    return 'fart'
+    // console.log(v)
+  }
+
+  public mappingFunction() {
+    return false;
+  };
 
   public render(): JSX.Element {
     // const { accounts } = this.props;
     return (
-      <div style={background}>
+      <div>
         <Row type="flex" justify="center">
           <div style={tableArea}>    
             <this.Search
@@ -68,7 +90,7 @@ class Membership extends React.Component<{}, IMembersipState> {
                   has to be in the child class' props interface
             */}
             {/* TDOO: "users" is going to have to be a bunch of "newClass -> table rows" */}
-            <MemberTable users={this.state.users}/>
+            <MemberTable n_test={this.state.users} visible_array={this.makeVisibleArray()}/>
 
             <br /><br />
           </div>

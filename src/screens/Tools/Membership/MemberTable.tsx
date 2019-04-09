@@ -1,27 +1,26 @@
 import { Divider, Table } from 'antd';
-import { DatePicker } from 'antd';
-import * as moment from 'moment';
+// import { DatePicker } from 'antd';
+// import { Button, Popover } from 'antd';
+// import * as moment from 'moment';
+import { Input } from 'antd'
 import * as React from 'react';
 
 interface IMemberTableProps {
   openDatePicker: boolean;
-  users: any,
+  n_test: any,
+  visible_array: any,
 }
 
-const dateFormat = 'MM/DD/YYYY';
+interface IMemberTableState {
+  visible: any,
+  users: any,
+  openDatePicker: boolean,
+}
 
-class MemberTable extends React.Component<IMemberTableProps, {}> {
+// const dateFormat = 'MM/DD/YYYY';
 
-  
-
-  // constructor(props: any) {
-  //   super(props);
-  //   this.state = {
-  //     pickerOpen: false,
-  //     selectedDate: null,
-  //     openDatePicker: false
-  //   }
-  // }
+class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> {
+  public Search = Input.Search;
 
   private col = [{
     key: 'firstName',
@@ -47,8 +46,14 @@ class MemberTable extends React.Component<IMemberTableProps, {}> {
     key: 'action',
     render: (record: any) => (
       <span>
-        <DatePicker size='small' defaultValue={moment('04/01/2019', dateFormat)} format={dateFormat} />
-        <a onClick={this.put(record.id, record, "2020-04-07T08:24:01.378Z")}>Edit</a>
+
+        <this.Search
+          placeholder="MM/DD/YYYY"
+          onSearch={this.logParam}
+          style={{ width: 150 }}
+        />
+
+        {/* <a onClick={this.put(record.id, record, "2020-04-07T08:24:01.378Z")}>Edit Date</a> */}
         <Divider type="vertical" />
         <a onClick={this.delete(record.id)}>Delete</a>
       </span>
@@ -56,8 +61,7 @@ class MemberTable extends React.Component<IMemberTableProps, {}> {
     title: 'Action',
   }];
 
-  // public editDate = (date: string) => {    
-  // }
+  
 
   // * https://stackoverflow.com/questions/52633932/reactjs-ant-design-open-datepicker-on-button-click
   // public togglePicker() {
@@ -71,13 +75,34 @@ class MemberTable extends React.Component<IMemberTableProps, {}> {
     this.state = {
       openDatePicker: false,
       users: [],
+      visible: this.func(this.props.n_test),
+      // visible: false,
     }
   }
 
-  public put = (id: any, record: any, date: any) => (e: any) => {
-    console.log(id, record, date);
-    record.membershipExpiration = date;
-    console.log(id, record, date);
+  public func = (users: any) => {
+    console.log('nathan: ', users);
+    return false;
+  }
+
+
+  public hide = () => {
+    console.log('fart');
+  }
+
+  public handleVisibleChange = () => {
+    this.setState(prevState => ({
+      visible: !prevState.visible
+    }))
+  }
+
+  public changeDate = (date: any, dateString: string) => (e: any) => {
+    console.log('fart');
+    console.log(date, dateString);
+  }
+  
+  public put = (id: any, date: any) => (e: any) => {
+    console.log(id, date);
     fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/' + id, { 
       body: JSON.stringify({
         membershipExpiration: date,
@@ -142,12 +167,12 @@ class MemberTable extends React.Component<IMemberTableProps, {}> {
   // }
 
   public logParam = (name: any) => (e: any) => console.log(name);
-  public printUsers = () => console.log(this.props.users);
+  public printUsers = () => console.log(this.props.visible_array);
 
   public render(): JSX.Element {
-    return (
+    return (  
       <div>
-        <Table columns={this.col} dataSource={this.props.users} pagination={{ defaultPageSize: 100 }} rowKey='uid'/>
+        <Table columns={this.col} dataSource={this.props.n_test} pagination={{ defaultPageSize: 100 }} rowKey='uid'/>
       </div>
     );
   }
