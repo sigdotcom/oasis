@@ -1,7 +1,9 @@
 import * as React from "react"
 import { Form, Input, InputNumber, DatePicker, Button } from 'antd';
+import moment from "moment"
 
 const { RangePicker } = DatePicker;
+const { TextArea } = Input;
 
 class EventForm extends React.Component<any, any> {
   convertTimes = (data: any) => {
@@ -78,7 +80,8 @@ class EventForm extends React.Component<any, any> {
               required: !editing, message: 'Please input the event\'s description!'
             }]
           })(
-            <Input />
+            <TextArea autosize={{ minRows: 2, maxRows: 6 }} />
+
           )}
         </Form.Item>
         <Form.Item
@@ -125,9 +128,12 @@ class EventForm extends React.Component<any, any> {
           label="Date and Time"
         >
           {getFieldDecorator('dateRange', {
-            rules: [{ type: 'array', required: !editing }],
+            initialValue: [moment(editData.dateHosted), moment(editData.dateExpire)],
+            rules: [{ type: 'array', required: !editing }]
           })(
-            <RangePicker showTime format="MM-DD-YYYY HH:mm:ss" />
+            <RangePicker
+              showTime
+              format="MMMM Do h:mm" />
           )}
         </Form.Item>
         <Form.Item >

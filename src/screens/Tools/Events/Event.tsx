@@ -28,6 +28,8 @@ interface IEventProps {
   key: number;
   editEvent: any;
   deleteEvent: any;
+  advertiseEvent: any;
+  createQR: any;
 }
 
 const EventWrapper = styled.li`
@@ -84,6 +86,14 @@ class Event extends React.Component<IEventProps, {}> {
     this.props.deleteEvent(this.props.event.id);
   }
 
+  handleAdvert = () => {
+    this.props.advertiseEvent(this.props.event);
+  }
+  
+  handleQR = () => {
+    this.props.createQR(this.props.event.id);
+  }
+
   render() {
     const { event } = this.props;
     return (
@@ -105,8 +115,14 @@ class Event extends React.Component<IEventProps, {}> {
           </EventDetails>
         </EventContent>
         <div>
-          <Button onClick={this.handleEdit}>Edit</Button>
-          <Button onClick={this.handleDelete}>Delete</Button>
+          <div>
+            <Button onClick={this.handleEdit}>Edit</Button>
+            <Button onClick={this.handleDelete}>Delete</Button>
+          </div>
+          <div>
+            <Button onClick={this.handleAdvert}>Advert</Button>
+            <Button onClick={this.handleQR}>QR</Button>
+          </div>
         </div>
       </EventWrapper>
     );

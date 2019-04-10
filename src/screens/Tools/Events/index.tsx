@@ -5,6 +5,7 @@ import { Form, Button } from 'antd'
 
 import Event from "./Event"
 import EventForm from "./EventForm"
+import AdvertForm from "./AdvertForm"
 
 Modal.setAppElement('#root')
 
@@ -33,7 +34,8 @@ interface IEventsState {
   isLoaded: boolean;
   modalIsOpen: boolean;
   editData: any;
-  editing: boolean
+  editing: boolean;
+  advert: boolean;
 }
 
 const PageWrapper = styled.div`
@@ -60,7 +62,8 @@ class Events extends React.Component<{}, IEventsState> {
       isLoaded: false,
       modalIsOpen: false,
       editData: {},
-      editing: true
+      editing: true,
+      advert: false
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -68,34 +71,16 @@ class Events extends React.Component<{}, IEventsState> {
     this.closeModal = this.closeModal.bind(this);
   }
 
-  closeModal() {
+  private closeModal() {
     this.setState({
       modalIsOpen: false,
-      editData: {}
+      editData: {},
+      advert: false
     });
   }
 
   public componentDidMount() {
     this.refresh();
-  }
-
-  private refresh = () => {
-    fetch("http://localhost/api/v1/events/")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            events: result,
-            isLoaded: true
-          });
-        },
-        (error) => {
-          this.setState({
-            error,
-            isLoaded: true
-          });
-        }
-      )
   }
 
   private addEvent = (event: any) => {
@@ -115,83 +100,116 @@ class Events extends React.Component<{}, IEventsState> {
       editing: true
     });
   }
-  
+
+  private advertiseEvent = (data: any) => {
+    this.setState({
+      modalIsOpen: true,
+      advert: true
+    });
+  }
+
+  private refresh = () => {
+    this.request("GET", "", null, {}, (result: any) => {
+      this.setState({
+        events: result,
+        isLoaded: true
+      });
+    });
+  }
+
   private deleteEvent = (id: number) => {
-    fetch("http://localhost/api/v1/events/" + id,
-      {
-        method: "DELETE",
-      })
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.refresh()
-        },
-        (error) => {
-          // TODO
-        }
-      )
+    this.request("DELETE", id.toString(), null, {}, (result: any) => {
+      this.refresh()
+    });
   }
 
   private postEvent = (data: any) => {
-    fetch("http://localhost/api/v1/events/",
-      {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: "POST",
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.closeModal()
-          this.refresh()
-        },
-        (error) => {
-          // TODO
-        }
-      )
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+    const body = JSON.stringify(data)
+    this.request("POST", "", body, headers, (result: any) => {
+      this.closeModal()
+      this.refresh()
+    });
   }
 
   private patchEvent = (data: any) => {
-    fetch("http://localhost/api/v1/events/" + data.id,
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+    const body = JSON.stringify(data)
+    this.request("PATCH", data.id.toString(), body, headers, (result: any) => {
+      this.closeModal()
+      this.refresh()
+    });
+  }
+
+  private request = (method: string, postUrl: string, data: string | null, headers: any, callback: any) => {
+    fetch("http://localhost/api/v1/events/" + postUrl,
       {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: "PATCH",
-        body: JSON.stringify(data)
+        headers: headers,
+        method: method,
+        body: data
       })
       .then(res => res.json())
       .then(
-        (result) => {
-          this.closeModal()
-          this.refresh()
-        },
+        (result) => callback(result),
         (error) => {
-          // TODO
+          throw new Error(error)
         }
       )
   }
 
-  changeValue = (field: string, event: any) => {
+  private changeValue = (field: string, event: any) => {
     let { editData } = this.state;
     editData[field] = event.target.value
     this.setState({editData: editData});
   }
 
-  handleChange = (field: string) => {
+  private handleChange = (field: string) => {
     return (event: any) => this.changeValue(field, event)
   }
 
-
   public render() {
-    const { events, isLoaded, error, modalIsOpen, editData, editing } = this.state;
+    const {
+      events,
+      isLoaded,
+      error,
+      modalIsOpen,
+      editData,
+      editing,
+      advert
+    } = this.state;
+
     let content;
-    const WrappedForm = Form.create({ name: 'edit' })(EventForm);
+    let innerModal;
     const intent = editing ? "Edit" : "Add";
+
+    const ModEvent = Form.create({ name: 'modify' })(EventForm);
+    const AdEvent = Form.create({ name: 'advert' })(AdvertForm);
+
+    if (advert) {
+      innerModal = (
+        <AdEvent
+        />
+      )
+    } else {
+      innerModal = (
+        <div>
+          <h1>{intent} Event Details</h1>
+          <ModEvent
+            editing={editing}
+            postEvent={this.postEvent}
+            patchEvent={this.patchEvent}
+            handleChange={this.handleChange}
+            editData={editData}
+          />
+        </div>
+      )
+    }
 
     const modal = (
       <Modal
@@ -200,16 +218,9 @@ class Events extends React.Component<{}, IEventsState> {
         contentLabel={intent + "Event"}
       >
         <Button onClick={this.closeModal}>Close</Button>
-        <h1>{intent} Event Details</h1>
-        <WrappedForm editing={editing} postEvent={this.postEvent} patchEvent={this.patchEvent} handleChange={this.handleChange} editData={editData}/>
+        {innerModal}
       </Modal>
     )
-    /*
-          Add these to the form
-          "dateCreated": "2019-04-07T18:43:13.087Z",
-          "dateHosted": "2019-04-07T13:43:13.033Z",
-          "dateExpire": "2019-04-07T13:43:13.033Z",
-    */
 
     if (!isLoaded) {
       content = (
@@ -222,7 +233,14 @@ class Events extends React.Component<{}, IEventsState> {
     } else {
       content = events.map((event: IEvent, index: number) => {
           return (
-            <Event event={event} deleteEvent={this.deleteEvent} editEvent={this.editEvent} key={index} />
+            <Event
+              advertiseEvent={this.advertiseEvent}
+              createQR={this.advertiseEvent}
+              event={event}
+              deleteEvent={this.deleteEvent}
+              editEvent={this.editEvent}
+              key={index}
+            />
           )
       })
     }
