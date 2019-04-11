@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Form, Input, InputNumber, Checkbox, Button } from 'antd';
+import moment from "moment"
 
 class AdvertForm extends React.Component<any, any> {
   handleSubmit = (e: any) => {
@@ -7,6 +8,28 @@ class AdvertForm extends React.Component<any, any> {
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
         console.log(values)
+        let targets = [{ email: "cmm4hf@mst.edu" }]
+        const { data } = this.props;
+        const body = {
+          "from": {
+            email: "acm-test-grp@mst.edu"
+          },
+          personalizations: [{
+            to: targets,
+            dynamic_template_data: {
+              subject: values.subject,
+              datetime: moment(data.dateHosted).format("dddd, MMMM Do [at] h:mmA"),
+              flier: data.flierLink,
+              host: data.hostSigs.name,
+              eventTitle: data.eventTitle,
+              location: data.location,
+              description: data.description,
+              link: data.eventLink
+            }
+          }],
+          template_id: "d-02ffcf22e9304e59a8c72beb5f8528d7"
+        }
+        this.props.sendEvent(body)
       }
     });
   }

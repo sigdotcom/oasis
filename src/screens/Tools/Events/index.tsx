@@ -104,12 +104,13 @@ class Events extends React.Component<{}, IEventsState> {
   private advertiseEvent = (data: any) => {
     this.setState({
       modalIsOpen: true,
-      advert: true
+      advert: true,
+      editData: data
     });
   }
 
   private refresh = () => {
-    this.request("GET", "", null, {}, (result: any) => {
+    this.request("GET", "", null, null, (result: any) => {
       this.setState({
         events: result,
         isLoaded: true
@@ -123,11 +124,33 @@ class Events extends React.Component<{}, IEventsState> {
     });
   }
 
-  private postEvent = (data: any) => {
+  private sendEvent = (body: any) => {
+    console.log("BODY", body)
+    fetch("http://localhost/api/v1/mail/", {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify(body)
+    })
+      .then(res => res.text())
+      .then(
+        (result) => {
+          console.log(result)
+        },
+        (error) => {
+          throw new Error(error)
+        }
+      )
+
+  }
+
+  private postEvent = (data: any, headerOverride: any = null) => {
     const headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      };
     const body = JSON.stringify(data)
     this.request("POST", "", body, headers, (result: any) => {
       this.closeModal()
@@ -148,17 +171,20 @@ class Events extends React.Component<{}, IEventsState> {
   }
 
   private request = (method: string, postUrl: string, data: string | null, headers: any, callback: any) => {
-    fetch("http://localhost/api/v1/events/" + postUrl,
-      {
-        headers: headers,
-        method: method,
-        body: data
-      })
+    let info: any = { method };
+    if (headers) info.headers = headers
+    if (data) info.body = data
+
+    fetch("http://localhost/api/v1/events/" + postUrl, info)
       .then(res => res.json())
       .then(
-        (result) => callback(result),
+        (result) => {
+          callback(result)
+        },
         (error) => {
-          throw new Error(error)
+          this.setState({
+            error
+          });
         }
       )
   }
@@ -194,6 +220,8 @@ class Events extends React.Component<{}, IEventsState> {
     if (advert) {
       innerModal = (
         <AdEvent
+          sendEvent={this.sendEvent}
+          data={editData}
         />
       )
     } else {
