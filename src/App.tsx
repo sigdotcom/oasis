@@ -2,6 +2,7 @@ import * as React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Events, FourZeroFour, Home, Membership, Products, Sigs, Sponsors, Tools } from './screens'
 
+localStorage.debug = 'oasis:*'
 
 import './App.css'
 

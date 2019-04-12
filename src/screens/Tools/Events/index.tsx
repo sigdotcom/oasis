@@ -6,27 +6,14 @@ import { Form, Button } from 'antd'
 import Event from "./Event"
 import EventForm from "./EventForm"
 import AdvertForm from "./AdvertForm"
+import { IEvent } from "./interfaces"
+
+import debug from "debug"
+
+const log = debug("oasis:events")
+log.log = console.log.bind(console);
 
 Modal.setAppElement('#root')
-
-interface ISig {
-  dateFounded: Date;
-  description: string;
-  name: string;
-}
-
-interface IEvent {
-  dateCreated: Date;
-  dateExpire: Date;
-  dateHosted: Date;
-  description: string;
-  eventLink: string;
-  eventTitle: string;
-  flierLink: string;
-  id: number;
-  location: string;
-  hostSigs: ISig;
-}
 
 interface IEventsState {
   error: any;
@@ -113,18 +100,19 @@ class Events extends React.Component<{}, IEventsState> {
     this.request("GET", "", null, null, (result: any) => {
       this.setState({
         events: result,
-        isLoaded: true
       });
+      log("Refreshed page")
     });
   }
 
   private deleteEvent = (id: number) => {
     this.request("DELETE", id.toString(), null, {}, (result: any) => {
       this.refresh()
+      log("Deleted event " + id)
     });
   }
 
-  private sendEvent = (body: any) => {
+  private sendEvent = (body: any, fin: boolean) => {
     console.log("BODY", body)
     fetch("http://localhost/api/v1/mail/", {
       headers: {
@@ -137,10 +125,11 @@ class Events extends React.Component<{}, IEventsState> {
       .then(res => res.text())
       .then(
         (result) => {
-          console.log(result)
+          log("Attempting to email " + JSON.stringify(body.personalizations[0].to))
+          if (fin) this.closeModal()
         },
-        (error) => {
-          throw new Error(error)
+        (error: Error) => {
+          log("Failed to send event with error message: " + error.toString())
         }
       )
 
@@ -180,11 +169,16 @@ class Events extends React.Component<{}, IEventsState> {
       .then(
         (result) => {
           callback(result)
+          this.setState({
+            isLoaded: true
+          })
         },
         (error) => {
           this.setState({
-            error
+            error,
+            isLoaded: true
           });
+          log("Failed to make request. Error message: " + error.toString())
         }
       )
   }
