@@ -125,7 +125,7 @@ class Events extends React.Component<{}, IEventsState> {
       .then(res => res.text())
       .then(
         (result) => {
-          log("Attempting to email " + JSON.stringify(body.personalizations[0].to))
+          log("Attempting to email " + JSON.stringify(body.personalizations[0].to) + " got " + result)
           if (fin) this.closeModal()
         },
         (error: Error) => {

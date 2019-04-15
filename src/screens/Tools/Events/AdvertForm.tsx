@@ -67,12 +67,10 @@ class AdvertForm extends React.Component<IAdvertProps & FormComponentProps, IAdv
     }
   }
  
-  private async createFliers(numFliers: number) {
+  
+  private createFliers(numFliers: number) {
     const { flierLink } = this.props.data;
-
-    const image = await this.getBase64ImageFromUrl(flierLink)
-    console.log("RESULT", image)
-    const body = {
+    return {
       "from": {
         email: "acm@mst.edu"
       },
@@ -80,55 +78,27 @@ class AdvertForm extends React.Component<IAdvertProps & FormComponentProps, IAdv
         to: {
           email: "cstask@mst.edu"
         },
-        attachments: {
-          content: image,
-          filename: "test.png"
-        },
         dynamic_template_data: {
-          numFliers: numFliers
+          numFliers: numFliers,
+          flierLink: flierLink
         }
       }],
       template_id: "d-c464d76df4ae45cc9c3bf62bdc381a18"
     }
-    return body
-  }
-
-  private async getBase64ImageFromUrl(imageUrl: string) {
-    var res = await fetch(imageUrl);
-    var blob = await res.blob();
-
-    return new Promise((resolve: any, reject: any) => {
-      var reader  = new FileReader();
-      reader.addEventListener("load", function () {
-          resolve(reader.result);
-      }, false);
-
-      reader.onerror = () => {
-        reject(this);
-      };
-      reader.readAsDataURL(blob);
-    })
   }
 
   private handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
     this.props.form.validateFields((err: Error, values: IForm) => {
       if (!err) {
-        console.log(values)
-        /*let targets: IEmailAddress[] = [{
+        let targets: IEmailAddress[] = [{
           email: "acm-test-grp@mst.edu"
         }] // The user sending the advert should be here
-        */
         this.setState({
           values
         })
-        if (values.numFliers) {
-          const flierBody = this.createFliers(values.numFliers)
-          console.log(flierBody)
-          this.props.sendEvent(flierBody, false)
-        }
-        //const body: MailData = this.createMessage(targets, values)
-        // this.props.sendEvent(body, false)
+        const body: MailData = this.createMessage(targets, values)
+        this.props.sendEvent(body, false)
         this.openConfirm()
       }
     });
