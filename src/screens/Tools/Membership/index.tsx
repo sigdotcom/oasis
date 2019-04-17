@@ -59,6 +59,70 @@ class Membership extends React.Component<{}, IMembersipState> {
     this.setState({ users: p })
   }
 
+  public onDeleteUpdateState(id: any) {
+    const newArr = this.state.users.filter((element: any) => {
+      return element.id !== id;
+    })
+    this.setState({ users: newArr })
+  }
+
+  public delete = (id: any) => async (e: any) => {
+    try {
+      console.log('before: ', this.state.users);
+      const response = await fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/' + id, { method: 'DELETE' });
+      const data = await response.json();
+      console.log('deleted: ', data);
+      this.onDeleteUpdateState(data.id);
+
+      fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members')
+        .then(results => {
+          console.log(results)
+          return results.json();
+        }).then(info => {
+          const userInfo = info;
+          this.setState({ users: userInfo });
+          console.log('after: ', this.state.users);
+        })
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  public put = (id: any, date: any) => async (e: any) => {
+    const response = await fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/' + id, {
+      body: JSON.stringify({
+        membershipExpiration: date,
+      }),
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      method: 'PUT',
+      mode: 'cors',
+    });
+    const data = await response.json();
+    console.log(data);
+    
+    fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members')
+      .then(results => {
+        console.log(results)
+        return results.json();
+      }).then(info => {
+        const userInfo = info;
+        this.setState({ users: userInfo });
+        console.log('after: ', this.state.users);
+      })
+      // .then(results => {
+      //   console.log("results: ", results);
+      //   return results.json();
+      // }).then(data => {
+      //   console.log("data: ", data);
+      //   const userInfo = data;
+
+      //   this.setState({ users: userInfo })
+      // }).catch(err => {
+      //   console.log(err);
+      // })
+  }
+
   public render(): JSX.Element {
     // const { accounts } = this.props;
     return (
@@ -78,7 +142,7 @@ class Membership extends React.Component<{}, IMembersipState> {
                   has to be in the child class' props interface
             */}
             {/* TDOO: "users" is going to have to be a bunch of "newClass -> table rows" */}
-            <MemberTable usersProps={this.state.users}/>
+            <MemberTable usersProps={this.state.users} delete={this.delete} put={this.put}/>
             <br /><br />
           </div>
         </Row>
