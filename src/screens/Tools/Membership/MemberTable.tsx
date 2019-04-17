@@ -38,7 +38,7 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
         {this.dateCheck(record.membershipExpiration)}
       </span>
     ),
-    title: 'Active',
+    title: 'Status',
   }, {
     key: 'action',
     render: (record: any) => (
@@ -56,7 +56,7 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
 
 
         {/* this is old stuff */}
-        <DatePicker size='small' defaultValue={moment(new Date(Date.now()), dateFormat)} format={dateFormat} />
+        <DatePicker defaultValue={moment(new Date(Date.now()), dateFormat)} format={dateFormat} />
         <a onClick={this.put(record.id, record, "2020-04-07T08:24:01.378Z")}>Edit</a>
         <Divider type="vertical" />
         <a onClick={this.delete(record.id)}>Delete</a>
@@ -65,18 +65,10 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
     title: 'Action',
   }];
 
-
-  // * https://stackoverflow.com/questions/52633932/reactjs-ant-design-open-datepicker-on-button-click
-  // public togglePicker() {
-  //   this.setState(prevState => ({
-  //     openDatePicker: !prevState.openDatePicker
-  //   }));
-  // }
-
   constructor(props: any) {
     super(props);
     this.state = {
-      users: this.props.usersProps,
+      users: [],
     }
   }
 
@@ -104,17 +96,15 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
       }).then(data => {
         console.log("data: ", data);
         const userInfo = data;
+
+        // await
         this.setState({ users: userInfo })
       }).catch(err => {
         console.log(err);
       })
   }
 
-  public changeDate = (date: any) => {
-    console.log('fart');
-    console.log(date);
-  }
-  
+
   public dateCheck = (date: string) => {
     let out = ''
     const expDate = new Date(date);
@@ -130,23 +120,23 @@ class MemberTable extends React.Component<IMemberTableProps, IMemberTableState> 
     return out
   }
 
-  public delete =(id: any) => (e: any) => {
-    console.log(id);
-    this.setState({ users: this.props.usersProps })
-    console.log(this.state.users);
-    console.log(this.props.usersProps);
+  public onDeleteUpdateState = (id: any) => {
+    const newArr = this.state.users.filter((element: any) => {
+      return element.id !== id;
+    })
+    this.setState({ users: newArr })
+  }
 
-    fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/'+id, {method: 'DELETE'})
-      .then(results => {
-        return results.json();
-      }).then(data => {
-        console.log(data);
-        const userInfo = data
-        this.setState({ users: userInfo })
-        console.log('after state: ', this.state.users);
-      }).catch(err => {
-        console.log('err: ', err);
-      })
+  public delete = (id: any) => async (e: any) => {
+    try { 
+      const response = await fetch('http://5ca5aef2ddab6d0014bc85c0.mockapi.io/members/' + id, { method: 'DELETE' });
+      const data = await response.json()
+      console.log(data.id);
+      this.onDeleteUpdateState(data.id);
+      console.log('after state: ', this.state.users);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   public logParam = (name: any) => (e: any) => console.log(name);

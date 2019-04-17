@@ -37,25 +37,27 @@ class Membership extends React.Component<{}, IMembersipState> {
   }
 
   public search = (value: any) => {
-    const words = value.split(' ');
-    const fName = words[0];
-    const lName = words[1];
+    
+    if (value === '') {
+      this.componentDidMount();
+    }
 
+    const words = value.split(' ');
+    // const fName = words[0];
+    // const lName = words[1];
     const p =  this.state.users.filter((element: any) => {
-      return element.firstName.toLowerCase() === fName.toLowerCase() && element.lastName.toLowerCase() === lName.toLowerCase();
+      for (const word of words) {
+        if (element.firstName.toLowerCase() === word.toLowerCase()) { return true; }
+        if (element.lastName.toLowerCase() === word.toLowerCase()) { return true; }
+        if (element.email.toLowerCase() === word.toLowerCase()) { return true; }
+        // return false;
+      }
+      
+      return false;
+      // return element.firstName.toLowerCase() === fName.toLowerCase() || element.lastName.toLowerCase() === lName.toLowerCase();
     });
     this.setState({ users: p })
   }
-
-  public makeVisibleArray() {
-
-    // const v = this.state.users.map((this.mappingFunction, item));
-    return 'fart'
-    // console.log(v)
-  }
-  public mappingFunction() {
-    return false;
-  };
 
   public render(): JSX.Element {
     // const { accounts } = this.props;
@@ -84,7 +86,6 @@ class Membership extends React.Component<{}, IMembersipState> {
     );
   };
 }
-
 
 
 export default Membership as any
