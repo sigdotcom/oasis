@@ -1,66 +1,54 @@
 import { Button, Layout, Menu } from "antd";
-import {
-  GoogleLogin,
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline
-} from "react-google-login";
-import * as React from "react";
+import React, { useContext } from "react";
+import GAPIContext from "../../../context/GAPIContext";
 
 const { Header } = Layout;
 
-class Nav extends React.Component {
-  private async submitGoogleToken(
-    response: GoogleLoginResponse | GoogleLoginResponseOffline
-  ) {
-    const GOOGLE_LOGIN: GoogleLoginResponse = response as GoogleLoginResponse;
-    const ID_TOKEN: string = GOOGLE_LOGIN.getAuthResponse().id_token;
-    console.log(ID_TOKEN);
-  }
+const Nav: React.FunctionComponent<{}> = () => {
+  const GAPI_CONTEXT = useContext(GAPIContext);
+  const signIn = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    const auth2 = gapi.auth2.getAuthInstance();
+    auth2
+      .signIn({ prompt: "consent" })
+      .then((res: gapi.auth2.GoogleUser) => {
+        GAPI_CONTEXT.setUser(res);
+      })
+      .catch((err: { error: string }) => {
+        console.error(err);
+      });
+  };
 
-  public render() {
-    // See .venv in project root
-    const GOOGLE_ID: string = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
-    const error = (response: any) => console.error(response);
-
-    return (
-      <Header>
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={["1"]}
-          style={{ lineHeight: "64px" }}
+  return (
+    <Header>
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        defaultSelectedKeys={["1"]}
+        style={{ lineHeight: "64px" }}
+      >
+        <Menu.Item key="1">Who Are We?</Menu.Item>
+        <Menu.Item key="2" disabled={true}>
+          Events
+        </Menu.Item>
+        <Menu.Item key="3" disabled={true}>
+          Sponsors
+        </Menu.Item>
+        <Menu.Item key="4" disabled={true}>
+          Officers
+        </Menu.Item>
+        <Button
+          onClick={signIn}
+          disabled={GAPI_CONTEXT.user !== undefined ? true : false}
+          style={{ float: "right" }}
         >
-          <Menu.Item key="1">Who Are We?</Menu.Item>
-          <Menu.Item key="2" disabled={true}>
-            Events
-          </Menu.Item>
-          <Menu.Item key="3" disabled={true}>
-            Sponsors
-          </Menu.Item>
-          <Menu.Item key="4" disabled={true}>
-            Officers
-          </Menu.Item>
-          <GoogleLogin
-            clientId={GOOGLE_ID}
-            prompt="consent"
-            hostedDomain="mst.edu"
-            render={(renderProps?: { onClick: () => void }) => (
-              <Button
-                onClick={renderProps ? renderProps.onClick : undefined}
-                disabled={renderProps ? false : true}
-                style={{ float: "right" }}
-              >
-                Sign In
-              </Button>
-            )}
-            buttonText="Login"
-            onSuccess={this.submitGoogleToken}
-            onFailure={error}
-          />
-        </Menu>
-      </Header>
-    );
-  }
-}
+          Sign In
+        </Button>
+      </Menu>
+    </Header>
+  );
+};
 
 export default Nav;
