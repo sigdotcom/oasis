@@ -1,10 +1,22 @@
 {
-  "extends": "strict-tslint-config",
-  "linterOptions": {
-    "exclude": [
-      "config/**/*.js",
-      "node_modules/**/*.ts",
-      "coverage/lcov-report/*.js"
-    ]
-  }
+    "extends": ["tslint:all", "tslint-config-prettier"],
+    "rules": {
+        "max-line-length": {
+            "options": [80]
+        },
+        "no-consecutive-blank-lines": false,
+        "completed-docs": false,
+        "no-console": {
+            "severity": "warning",
+            "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+        },
+        "no-any": {
+          "severity": "warning"
+        }
+    },
+    "jsRules": {
+        "max-line-length": {
+            "options": [80]
+        }
+    }
 }

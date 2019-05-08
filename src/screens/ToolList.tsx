@@ -1,7 +1,7 @@
-import * as React from "react"
-import { Link } from "react-router-dom"
+import * as React from "react";
+import { Link } from "react-router-dom";
 
-const Tools = () => {
+const ToolList = () => {
   return (
     <div>
       <h2>Tools:</h2>
@@ -23,6 +23,6 @@ const Tools = () => {
         </li>
       </ul>
     </div>
-  )
-}
-export default Tools
+  );
+};
+export default ToolList;
