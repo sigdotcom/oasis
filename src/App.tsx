@@ -22,7 +22,7 @@ const handleGAPIinit = (
     client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID || "",
     cookie_policy: "single_host_origin",
     fetch_basic_profile: true,
-    hosted_domain: "mst.edu",
+    hosted_domain: "umsystem.edu",
     scope: "profile email",
     ux_mode: "popup" as "popup"
   };
@@ -49,6 +49,7 @@ const App: React.FunctionComponent<{}> = (): JSX.Element => {
     undefined
   );
   const updateUser = (user: gapi.auth2.GoogleUser): void => {
+    console.log(user.getAuthResponse().id_token);
     setUser(user);
   };
 
